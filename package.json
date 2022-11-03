@@ -27,6 +27,6 @@
   "license": "ISC",
   "engines": {
     "node": "18.x",
-    "npm" : "7.x"
+    "npm":"x.7"
   }
 }
