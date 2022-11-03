@@ -71,21 +71,21 @@ binacc="0.9740835862713052"
 mulacc="0.9725893065608219"
 app.get("/", function(req, res){
   res.render("home");
-  let options={
-    args:[]
-  };
-  PythonShell.run('temp.py',options, (err,response)=>{
-    if (err)
-    console.log(err);
-    if(response){
-      bs=stringify(response[0]);
-      bincls=bs.slice(2,-2);
-      ms=stringify(response[1]);
-      mulcls=ms.slice(2,-2);
-      dc=stringify(response[2]);
-      desc=dc.slice(2,-2);
-    }
-  });
+  // let options={
+  //   args:[]
+  // };
+  // PythonShell.run('temp.py',options, (err,response)=>{
+  //   if (err)
+  //   console.log(err);
+  //   if(response){
+  //     bs=stringify(response[0]);
+  //     bincls=bs.slice(2,-2);
+  //     ms=stringify(response[1]);
+  //     mulcls=ms.slice(2,-2);
+  //     dc=stringify(response[2]);
+  //     desc=dc.slice(2,-2);
+  //   }
+  // });
 });
 
 app.get('/auth/google',
