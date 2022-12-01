@@ -1,4 +1,5 @@
 //jshint esversion:6
+
 require('dotenv').config();
 currentYear = new Date().getFullYear();
 const {parse, stringify} = require('flatted');
@@ -95,7 +96,7 @@ app.get("/", function(req, res){
   let options={
     args:[]
   };
-  PythonShell.run('nids_random.py',options, (err,response)=>{
+  PythonShell.run('nids_parameter.py',options, (err,response)=>{
     if (err)
     console.log(err);
     if(response){
@@ -145,7 +146,99 @@ app.get("/secrets",function(req,res){
   res.render("secrets");
 })
 
+complete_answer=""
+// knn
+knn_bin_cls=""
+knn_mul_cls=""
+knn_desc=""
+knn_bin_acc="0.9760368900303525"
+knn_mul_acc="0.9740368900303525"
+// random forest
+rf_bin_cls=""
+rf_mul_cls=""
+rf_desc=""
+rf_bin_acc="0.9741029652113005"
+rf_mul_acc="0.9731029652113005"
+// cnn
+cnn_bin_cls=""
+cnn_mul_cls=""
+cnn_desc=""
+cnn_bin_acc="0.8248890964277376"
+cnn_mul_acc="0.772682699042727"
+//lstm
+lstm_bin_cls=""
+lstm_mul_cls=""
+lstm_desc=""
+lstm_bin_acc="0.828017744571562"
+lstm_mul_acc="0.7606350688769554"
+app.post("/parameters",function(req,res)
+{
+  const submitted_protocol_type=req.body.protocol_type;
+  const submitted_service=req.body.service;
+  const submitted_flag=req.body.flag;
+  const submitted_logged_in=req.body.logged_in;
+  const submitted_count=req.body.count;
+  const submitted_srv_serror_rate=req.body.srv_serror_rate;
+  const submitted_srv_rerror_rate=req.body.srv_rerror_rate;
+  const submitted_same_srv_rate=req.body.same_srv_rate;
+  const submitted_diff_srv_rate=req.body.diff_srv_rate;
+  const submitted_dst_host_count=req.body.dst_host_count;
+  const submitted_dst_host_srv_count=req.body.dst_host_srv_count;
+  const submitted_dst_host_same_srv_rate=req.body.dst_host_same_srv_rate;
+  const submitted_dst_host_diff_srv_rate=req.body.dst_host_diff_srv_rate;
+  const submitted_dst_host_same_src_port_rate=req.body.dst_host_same_src_port_rate;
+  const submitted_dst_host_serror_rate=req.body.dst_host_serror_rate;
+  const submitted_dst_host_rerror_rate=req.body.dst_host_rerror_rate;
 
+  let options={
+    args:[submitted_protocol_type,submitted_service,submitted_flag,submitted_logged_in,submitted_count,submitted_srv_serror_rate,submitted_srv_rerror_rate,submitted_same_srv_rate,submitted_diff_srv_rate,submitted_dst_host_count,submitted_dst_host_srv_count,submitted_dst_host_same_srv_rate,submitted_dst_host_diff_srv_rate,submitted_dst_host_same_src_port_rate,submitted_dst_host_serror_rate,submitted_dst_host_rerror_rate]
+  };
+  PythonShell.run('tp.py',options, (err,response)=>{
+    if (err)
+    console.log(err);
+    if(response){
+      complete_answer=stringify(response);
+
+      //knn
+      temp_knn_bin_cls=stringify(response[1]);
+      knn_bin_cls=temp_knn_bin_cls.slice(2,-2);
+
+      temp_knn_mul_cls=stringify(response[2]);
+      knn_mul_cls=temp_knn_mul_cls.slice(2,-2);
+
+      temp_knn_desc=stringify(response[3]);
+      knn_desc=temp_knn_desc.slice(2,-2);
+      //random forest
+      temp_rf_bin_cls=stringify(response[5]);
+      rf_bin_cls=temp_rf_bin_cls.slice(2,-2);
+
+      temp_rf_mul_cls=stringify(response[6]);
+      rf_mul_cls=temp_rf_mul_cls.slice(2,-2);
+
+      temp_rf_desc=stringify(response[7]);
+      rf_desc=temp_rf_desc.slice(2,-2);
+      //cnn
+      temp_cnn_bin_cls=stringify(response[9]);
+      cnn_bin_cls=temp_cnn_bin_cls.slice(2,-2);
+
+      temp_cnn_mul_cls=stringify(response[10]);
+      cnn_mul_cls=temp_cnn_mul_cls.slice(2,-2);
+
+      temp_cnn_desc=stringify(response[11]);
+      cnn_desc=temp_cnn_desc.slice(2,-2);
+      //lstm
+      temp_lstm_bin_cls=stringify(response[13]);
+      lstm_bin_cls=temp_lstm_bin_cls.slice(2,-2);
+
+      temp_lstm_mul_cls=stringify(response[14]);
+      lstm_mul_cls=temp_lstm_mul_cls.slice(2,-2);
+
+      temp_lstm_desc=stringify(response[15]);
+      lstm_desc=temp_lstm_desc.slice(2,-2);
+    }
+  });
+  res.redirect("/paramsecrets");
+})
 
 app.get("/features",function(req,res){
   res.render("features");
